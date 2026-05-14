@@ -278,9 +278,47 @@ from
 group by t1.lido
 );
 
-select * from vw_livro_lido;
+select * from vw_livro_lido_qtd;
 
-create or replace vw_livro_lido as (
-select titulo
+/*retorna os livros lidos*/
+create or replace view vw_livro_lido as (
+select titulo 
+
 from livro where lido = 1
 );
+
+create or replace view vw_relatorio as (
+select t2.nome as categoreia,
+	count(t1.livro) as qtd,
+	sum (t1.lido) qtd_lido,
+	round((sum(t1.lido) / count(t1.id_livro)) * 100, 2) as pct_lido
+from
+	livro t1
+join 
+	categoria t2 on (t1.id_categoria = t2.id_categoria)
+group by
+	t2.nome
+);
+
+select * from vw_relatorio;
+
+delimiter $$
+create procedure sp_atualizar_relatorio()
+begin
+	start transaction;
+    
+    drop table if exists relatorio;
+    
+    create table relatorio (
+		categoria varchar(255),
+        qtd int,
+        qtd_lido int,
+        pc_lido decimal
+    );
+    insert into relatorio (select * from vw_relatorio);
+
+	commit;    
+end$$
+
+call sp_atualizar_relatorio();
+
