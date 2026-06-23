@@ -1,3 +1,4 @@
+drop database if exists biblioteca_pessoal;
 
 create database biblioteca_pessoal;
 use biblioteca_pessoal;
@@ -322,3 +323,17 @@ end$$
 
 call sp_atualizar_relatorio();
 
+delimiter $$
+create trigger audit_delete_livro
+after delete on livro
+for each row 
+begin
+	insert into audit_livro
+		(acao, usuario_bd, id_livro, dados_antigos)
+    values
+		("delete", user(), old.id_livro,
+			concat("titulo: ", old.titulo , " lido: ", old.lido)
+		);
+end $$
+delimiter ;
+select * from audit_livro;
