@@ -1,286 +1,195 @@
+CREATE DATABASE Cursos;
+USE Cursos;
 
-create database biblioteca_pessoal;
-use biblioteca_pessoal;
-
-
-CREATE TABLE usuario(
-	id_usuario INT PRIMARY KEY AUTO_INCREMENT,
-    nome VARCHAR(255) NOT NULL,
-    email VARCHAR(255) NOT NULL UNIQUE,
-    senha VARCHAR(255) NOT NULL,
-    data_cadastro TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    data_atualizacao TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
+create table Aluno (
+	id_aluno int primary key auto_increment not null,
+	nome varchar (128) not null,
+	email varchar (128) unique not null,
+	dt_nascimento date
 );
 
-CREATE TABLE categoria(
-	id_categoria INT PRIMARY KEY AUTO_INCREMENT,
-    nome VARCHAR(255) UNIQUE,
-    descricao TEXT,
-    data_cadastro TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    data_atualizacao TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
+create table Professor (
+	id_professor int primary key auto_increment not null,
+	nome varchar (128),
+	email varchar (128) unique not null,
+	especialidade varchar (128) 
 );
 
-CREATE TABLE autor(
-	id_autor INT PRIMARY KEY AUTO_INCREMENT,
-    nome VARCHAR(255) NOT NULL UNIQUE,
-    ano_nascimento int,
-    ano_morte int,
-    apresentacao TEXT,
-    data_cadastro TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    data_atualizacao TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
+create table Curso (
+	id_curso int primary key auto_increment not null,
+	titulo varchar(128) not null,
+	descricao text,
+	carga_horaria varchar (128) not null
+	
 );
 
-CREATE TABLE editora(
-	id_editora INT PRIMARY KEY AUTO_INCREMENT,
-    nome VARCHAR(255) NOT NULL UNIQUE,
-    cidade VARCHAR(255),
-    estado VARCHAR(255),
-    pais VARCHAR(255),
-    data_cadastro TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    data_atualizacao TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
+
+create table Turma(
+	id_turma int primary key auto_increment not null,
+    id_curso int,
+    id_professor int,
+    horario varchar (64),
+    
+	constraint fk_curso_turma foreign key (id_curso)
+    references curso (id_curso)
+    on delete cascade,
+    
+    constraint fk_professor_turma foreign key (id_professor)
+    references professor (id_professor)
+    on delete cascade
 );
 
-CREATE TABLE livro(
-	id_livro INT PRIMARY KEY AUTO_INCREMENT,
-    id_usuario INT,
-    id_autor INT,
-    id_editora INT,
-    id_categoria INT, 
-    titulo VARCHAR(255) NOT NULL,
-    sinopse TEXT,
-    ano_publicacao int,
-    lido BOOLEAN DEFAULT(0),
-    data_cadastro TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    data_atualizacao TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-    
-	CONSTRAINT fk_usuario_livro FOREIGN KEY (id_usuario) 
-    REFERENCES usuario(id_usuario)
-    ON DELETE CASCADE,
-    
-    CONSTRAINT fk_autor_livro FOREIGN KEY (id_autor) 
-    REFERENCES autor(id_autor)
-    ON DELETE RESTRICT,
-    
-    CONSTRAINT fk_editora_livro FOREIGN KEY (id_editora) 
-    REFERENCES editora(id_editora)
-    ON DELETE RESTRICT,
-    
-    CONSTRAINT fk_categoria_livro FOREIGN KEY (id_categoria) 
-    REFERENCES categoria(id_categoria)
-    ON DELETE RESTRICT
-);
- /** USUÁRIOS */
-INSERT INTO usuario (nome, email, senha) VALUES
-('Ana Silva', 'ana@email.com', '123'),
-('Bruno Souza', 'bruno@email.com', '123'),
-('Carla Mendes', 'carla@email.com', '123');
 
-/** CATEGORIAS */
-INSERT INTO categoria (nome, descricao) VALUES
-('Ficção Científica', 'Livros com temas futuristas e científicos'),
-('Fantasia', 'Mundos imaginários e mágicos'),
-('Romance', 'Histórias centradas em relações humanas'),
-('Clássicos', 'Obras consagradas da literatura'),
-('Suspense', 'Narrativas de tensão e mistério'),
-('Filosofia', 'Reflexões filosóficas');
+create table Matricula (
+	id_matricula int primary key auto_increment not null,
+	data_matricula date not null,
+	id_aluno int,
+	id_turma int,
+    nota float,
 
-/** AUTORES */
-INSERT INTO autor (nome, ano_nascimento, ano_morte) VALUES
-('George Orwell', 1903, 1950),
-('J.R.R. Tolkien', 1892, 1973),
-('Jane Austen', 1775, 1817),
-('Machado de Assis', 1839, 1908),
-('Agatha Christie', 1890, 1976),
-('Isaac Asimov', 1920, 1992),
-('Fyodor Dostoevsky', 1821, 1881),
-('J.K. Rowling', 1965, NULL),
-('Stephen King', 1947, NULL),
-('Aldous Huxley', 1894, 1963);
 
-/** EDITORAS */
-INSERT INTO editora (nome, cidade, estado, pais) VALUES
-('Penguin Books', 'Londres', NULL, 'Reino Unido'),
-('HarperCollins', 'Nova York', 'NY', 'EUA'),
-('Companhia das Letras', 'São Paulo', 'SP', 'Brasil'),
-('Editora Record', 'Rio de Janeiro', 'RJ', 'Brasil'),
-('Rocco', 'Rio de Janeiro', 'RJ', 'Brasil');
+	constraint fk_aluno_matricula foreign key (id_aluno)
+	references aluno(id_aluno)
+	on delete cascade,
 
-/** LIVROS (42 REGISTROS) */
+	constraint fk_turma_matricula foreign key (id_turma)
+	references turma(id_turma)
+	on delete cascade
+    );
+	
+    /*ALUNOS*/
+insert into Aluno(nome, email, dt_nascimento) values
+	("Luiza de Sousa", "luiza@gmail.com", "2002-07-20"),
+	("Ana Silva", "ana@gmail.com", "2007-02-21"),
+	("Pedro Costa","pedro@gmail.com","2003-06-15"),
+	("Paulo Cunha", "paulo@gmail.com", "2005-11-04"),
+	('Carlos Henrique Oliver', 'carlos.oliver@gmail.com', '1998-03-12'),
+	('Mariana Souza Santos', 'mari.santos@gmail.com', '2001-07-25'),
+	('Lucas Gabriel Lima', 'lucas.lima@outlook.com', '2003-11-02'),
+	('Beatriz Costa Araujo', 'bia.araujo@gmail.com', '2000-05-18'),
+	('Gabriel Ribeiro Alves', 'gabs.alves@gmail.com', '1999-09-30'),
+	('Amanda Martins Melo', 'amanda.melo@hotmail.com', '2002-01-14'),
+	('Rafael Fonseca Dias', 'rafa.dias@gmail.com', '1997-12-05'),
+	('Larissa Carvalho Reis', 'lari.reis@gmail.com', '2004-04-22'),
+	('Mateus Rocha Silva', 'mateus.rocha@outlook.com', '2001-08-09'),
+	('Camila Nogueira Lima', 'camila.nog@gmail.com', '2000-02-27'),
+	('Thiago Mendes Cruz', 'thiago.cruz@gmail.com', '1996-10-16'),
+	('Isabela Freire Gomes', 'isa.freire@gmail.com', '2003-06-21'),
+	('Bruno Cardoso Pinto', 'bruno.cardoso@hotmail.com', '1999-04-03'),
+	('Letícia Vieira Rocha', 'le.vieira@gmail.com', '2002-11-11'),
+	('Rodrigo Cunha Barbosa', 'rodrigo.cunha@gmail.com', '1995-07-08'),
+	('Juliana Castro Neves', 'ju.castro@gmail.com', '2001-03-19'),
+	('Diego Fernandes Lima', 'diego.fer@outlook.com', '1998-08-24'),
+	('Fernanda Ramos Pires', 'fe.ramos@gmail.com', '2004-01-05'),
+	('Leonardo Moraes Maciel', 'leo.moraes@gmail.com', '2000-09-14'),
+	('Gabriela Ortiz Farias', 'gabi.ortiz@gmail.com', '2003-05-29'),
+	('Vitor Hugo Teixeira', 'vitor.hugo@hotmail.com', '1997-11-18'),
+	('Sophia Malta Fagundes', 'sophia.malta@gmail.com', '2002-06-07'),
+	('Marcelo Augusto Neto', 'marcelo.guto@gmail.com', '1996-02-23'),
+	('Natália Guerra Meireles', 'nat.guerra@gmail.com', '2001-10-12'),
+	('Felipe Dantas Sales', 'felipe.dantas@outlook.com', '1999-01-29'),
+	('Alice Ramos Nogueira', 'alice.ramos@gmail.com', '2004-08-04'),
+	('Gustavo Henrique Paz', 'gustavo.paz@gmail.com', '2000-12-15'),
+	('Heloísa Frota Dorneles', 'helo.frota@gmail.com', '2002-04-09'),
+	('Caio Vinícius Malta', 'caio.vini@hotmail.com', '1998-05-22'),
+	('Lorena Vasconcelos', 'lore.vasco@gmail.com', '2003-09-03'),
+	('Arthur Schimidt Barbosa', 'arthur.sb@gmail.com', '1995-04-17'),
+	('Cecília Meireles Prado', 'cecilia.prado@gmail.com', '2001-12-26'),
+	('Danilo Soares Rezende', 'danilo.soares@outlook.com', '1999-07-11'),
+	('Manuela Antunes Vila', 'manu.vila@gmail.com', '2004-02-13'),
+	('Samuel Peixoto Correa', 'samuel.peixoto@gmail.com', '2000-03-08'),
+	('Evelyn Assis Fontes', 'evelyn.assis@gmail.com', '2002-10-20'),
+	('Igor Guimarães Torres', 'igor.gt@hotmail.com', '1997-06-14'),
+	('Bárbara Silveira Luz', 'barbara.luz@gmail.com', '2003-01-31'),
+	('Renan Lopes Pinheiro', 'renan.lopes@gmail.com', '1996-09-05'),
+	('Clarice Mendes Franco', 'clarice.franco@gmail.com', '2001-05-14');
 
-/** Usuário 1 */
-INSERT INTO livro (id_usuario, id_autor, id_editora, id_categoria, titulo, ano_publicacao, lido) VALUES
-(1,1,1,4,1984,1949,1),
-(1,1,1,1,'Animal Farm',1945,1),
-(1,2,1,2,'The Hobbit',1937,1),
-(1,2,1,2,'The Lord of the Rings',1954,0),
-(1,3,1,3,'Pride and Prejudice',1813,1),
-(1,3,1,3,'Sense and Sensibility',1811,0),
-(1,4,3,4,'Dom Casmurro',1899,1),
-(1,4,3,4,'Memórias Póstumas de Brás Cubas',1881,0),
-(1,5,2,5,'Murder on the Orient Express',1934,1),
-(1,5,2,5,'And Then There Were None',1939,0),
-(1,6,2,1,'Foundation',1951,1),
-(1,6,2,1,'I, Robot',1950,0),
-(1,7,1,6,'Crime and Punishment',1866,1),
-(1,7,1,6,'The Brothers Karamazov',1880,0);
 
-/** Usuário 2 */
-INSERT INTO livro (id_usuario, id_autor, id_editora, id_categoria, titulo, ano_publicacao, lido) VALUES
-(2,8,5,2,'Harry Potter and the Sorcerer''s Stone',1997,1),
-(2,8,5,2,'Harry Potter and the Chamber of Secrets',1998,1),
-(2,8,5,2,'Harry Potter and the Prisoner of Azkaban',1999,0),
-(2,9,2,5,'The Shining',1977,1),
-(2,9,2,5,'It',1986,0),
-(2,9,2,5,'Misery',1987,1),
-(2,10,1,1,'Brave New World',1932,1),
-(2,10,1,1,'Island',1962,0),
-(2,1,1,1,'Homage to Catalonia',1938,0),
-(2,6,2,1,'The Caves of Steel',1953,1),
-(2,6,2,1,'The Naked Sun',1957,0),
-(2,5,2,5,'Death on the Nile',1937,1),
-(2,3,1,3,'Emma',1815,0),
-(2,4,3,4,'Quincas Borba',1891,1);
+/*PROFESSORES*/
+insert into Professor(nome, email, especialidade) values
+	("Carlos Eduardo Silva", "carlos@gmail.com", "P.O.O."),
+	("Ana Beatriz Rodrigues","anab@gmail.com","Rede de Computadores"),
+	("João Pedro Macleure Nunes dos Santos", "joao@gmail.com", "Laborarotio de banco de dados"),
+	("Mariana Costa Lima","mariana@gmail.com","Métodos Ágeis");
 
-/** Usuário 3 */
-INSERT INTO livro (id_usuario, id_autor, id_editora, id_categoria, titulo, ano_publicacao, lido) VALUES
-(3,7,1,6,'Notes from Underground',1864,1),
-(3,7,1,6,'The Idiot',1869,0),
-(3,2,1,2,'Silmarillion',1977,0),
-(3,2,1,2,'Unfinished Tales',1980,0),
-(3,8,5,2,'Harry Potter and the Goblet of Fire',2000,1),
-(3,8,5,2,'Harry Potter and the Order of the Phoenix',2003,0),
-(3,9,2,5,'Carrie',1974,1),
-(3,9,2,5,'Pet Sematary',1983,0),
-(3,10,1,1,'Doors of Perception',1954,1),
-(3,6,2,1,'Prelude to Foundation',1988,0),
-(3,6,2,1,'Forward the Foundation',1993,0),
-(3,5,2,5,'The ABC Murders',1936,1),
-(3,4,3,4,'Helena',1876,0),
-(3,3,1,3,'Mansfield Park',1814,1);
 
-/*carrega todos os livros*/
-select * from livro;
+/*CURSOS*/
+insert into Curso(titulo, descricao, carga_horaria) values
+	("Progamação Orientada a Objetos", "Um paradigma de programação é um estilo fundamental de programação que molda como os programadores estruturam, organizam e escrevem código.", "120h"),
+	("Rede de Compudadores", "um sistema que interconecta computadores  para trocar dados e compartilhar recursos.", "80h"),
+	("Laboratório de Banco de Dados","Desenvolvimento de consultas SQL, processamento de dados, modelagem, triggers, índices e controle de transações em plataformas como PostgreSQL, MySQL ou Oracle.", "60h"),
+	("Métodos Ágeis","abordagens iterativas e incrementais focadas na entrega de valor contínua, colaboração e rápida adaptação às mudanças.","40h");
 
-/*carrega todos os livros (titulo) 
-e busca o nome do autor
-e busca o nome da categoria*/
-select 
-	t5.nome as nome_usuario,
-    t2.nome as nome_autor,
-    t1.titulo,
-    t3.nome as nome_categoria,
-    t4.nome as nome_editora
-    
-from 
-	livro t1
-join
-	usuario t5 on (t1.id_usuario = t5.id_usuario)
-join
-	autor t2 on (t1.id_autor = t2.id_autor)
-join
-	CATEGORIA T3 ON (t1.id_categoria = t3.id_categoria)
-join
-	editora t4 on (t1.id_editora = t4.id_editora);
-    
-/* Conta quantidade de livros na tabela para
-todos os usuario especifico*/
+/*TURMA*/
+	insert into Turma(id_curso, id_professor, horario) values
+	(1,1, "Matutino"),
+	(2,2, "Verspertino"),
+	(3,3, "Verspertino"),
+	(4,4, "Noturno");
+
+/*MATÍCULA*/
+insert into Matricula(id_aluno, data_matricula, id_turma, nota) values
+	(5, '2026-02-10', 1, 8.5),
+	(5, '2026-02-10', 2, 7.0),
+	(6, '2026-02-11', 1, 9.2),
+	(6, '2026-02-11', 3, 6.5),
+	(7, '2026-02-12', 2, 5.8),
+	(7, '2026-02-12', 4, 8.0),
+	(8, '2026-02-12', 3, 10.0),
+	(8, '2026-02-12', 1, 7.5),
+	(9, '2026-02-13', 4, 4.5),
+	(10, '2026-02-15', 1, 8.8),
+	(11, '2026-02-15', 2, 9.0),
+	(12, '2026-02-16', 3, 7.2),
+	(13, '2026-02-17', 4, 6.0),
+	(14, '2026-02-18', 1, 8.0),
+	(15, '2026-02-19', 2, 5.5),
+	(16, '2026-02-20', 3, 7.8),
+	(17, '2026-02-22', 4, 9.5),
+	(18, '2026-02-22', 1, 6.2),
+	(19, '2026-02-23', 2, 8.3),
+	(20, '2026-02-24', 3, 4.0),
+	(21, '2026-02-25', 4, 7.9),
+	(22, '2026-02-25', 1, 8.7),
+	(23, '2026-02-26', 2, 6.8),
+	(24, '2026-02-27', 3, 9.1),
+	(25, '2026-03-01', 4, 10.0),
+	(26, '2026-03-02', 1, 5.0),
+	(27, '2026-03-03', 2, 7.4),
+	(28, '2026-03-04', 3, 8.2),
+	(29, '2026-03-05', 4, 6.9),
+	(30, '2026-03-05', 1, 9.6),
+	(31, '2026-03-06', 2, 8.1),
+	(32, '2026-03-08', 3, 7.3),
+	(33, '2026-03-09', 4, 5.2),
+	(34, '2026-03-10', 1, 8.0),
+	(35, '2026-03-11', 2, 9.4),
+	(36, '2026-03-12', 3, 6.7);
+
+describe aluno;
+select * from aluno;
+select * from curso;
+select * from professor;
+select * from turma;
+select * from matricula;
+
+/*JOINS*/
 select
-	t1.id_usuario,
-    t2.nome as usuario,
-    t1.id_categoria,
-    t3.nome as categoria,
-    t1.id_editora,
-    t4.nome as editora,
-	count(t1.id_livro) as qtd_livro,
-	(count(t1.id_livro)/(select count(*) from livro))*100 as pct
-
-from 
-	livro t1
+	t1.nome as nome_aluno,
+    t3.titulo as nome_curso,
+    t4.nome as nome_professor,
+    t2.horario as horario_turma,
+    t5.data_matricula
+from
+	Aluno t1
 join
-	usuario t2 on (t1.id_usuario = t2.id_usuario)
+	Matricula t5 on (t1.id_aluno = t5.id_aluno)
 join
-	categoria t3 on (t1.id_categoria = t3.id_categoria)
+	Turma t2 on (t5.id_turma = t2.id_turma)
 join
-	editora t4 on (t1.id_editora = t4.id_editora)
+	Curso t3 on (t2.id_curso = t3.id_curso)
+join
+	Professor t4 on (t2.id_professor = t4.id_professor)
 group by
-	t1.id_usuario,
-    t2.nome,
-    t1.id_categoria,
-    t3.nome,
-    t4.nome
-order by
-	t1.id_usuario, t2.nome,
-	pct desc;
-    
-    /*Conta livros lidos e não lidos por usuário
-    ou
-    conta registros agrupando peklas colunas id_usuario e lido*/
-    
-select 
-	id_usuario,
-    lido,
-    count(*) as qtd
-from 
-	livro
-group by
-	id_usuario,
-    lido;
-    
-    /*calcula a idade média dos autores*/
-select
-    avg(
-		if (ano_morte > 0, ano_morte, year(current_date())) - ano_nascimento
-	) as idade_media_autor
-    
-from
-	autor;
-    
-/*calcula quantidades, percentuais, max e min
-usando funções de agregação*/
-
-select
-	t1.id_usuario,
-    t2.nome,
-    sum(t1.lido) as qtd_livro_lido,
-    count(t1.id_livro) as qtd_livro,
-	round((sum(t1.lido)/count(t1.id_livro))*100, 2) as pct_livro,
-	max(t1.ano_publicacao) as ano_mais_recente,
-	min(t1.ano_publicacao) as ano_mais_antigo
-from
-	livro t1
-join
-	usuario t2 on (t1.id_usuario = t2.id_usuario)
-group by
-	t1.id_usuario,
-    t2.nome;
-
-/*view vw_categoria_livro*/
-create or replace view vw_categoria_livro as (
-select
-	t2.nome as categoria,
-    count(t1.id_livro) as qtd
-from
-	livro t1
-join categoria t2 on (t1.id_categoria = t2.id_categoria)
-group by t2.nome
-);
-
-/*consulta dados da view*/
-select * from vw_categoria_livro;
 
 
-create or replace view vw_livro_lido_qtd as (
-select
-	t1.lido as lido,
-    count(t1.lido) as qtd
-from
-	livro t1
-group by t1.lido
-);
-
-select * from vw_livro_lido;
-
-create or replace vw_livro_lido as (
-select titulo
-from livro where lido = 1
-);
