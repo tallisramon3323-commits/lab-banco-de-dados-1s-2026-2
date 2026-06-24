@@ -1,42 +1,4 @@
-create database biblioteca_pessoal;
-use biblioteca_pessoal;
-
-
-CREATE TABLE usuario(
-	id_usuario INT PRIMARY KEY AUTO_INCREMENT,
-    nome VARCHAR(255) NOT NULL,
-    email VARCHAR(255) NOT NULL UNIQUE,
-    senha VARCHAR(255) NOT NULL,
-    data_cadastro TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    data_atualizacao TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
-);
-
-CREATE TABLE categoria(
-	id_categoria INT PRIMARY KEY AUTO_INCREMENT,
-    nome VARCHAR(255) UNIQUE,
-    descricao TEXT,
-    data_cadastro TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    data_atualizacao TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
-);
-
-CREATE TABLE autor(
-	id_autor INT PRIMARY KEY AUTO_INCREMENT,
-    nome VARCHAR(255) NOT NULL UNIQUE,
-    ano_nascimento int,
-    ano_morte int,
-    apresentacao TEXT,
-    data_cadastro TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    data_atualizacao TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
-);
-
-CREATE TABLE editora(
-	id_editora INT PRIMARY KEY AUTO_INCREMENT,
-    nome VARCHAR(255) NOT NULL UNIQUE,
-    cidade VARCHAR(255),
-    estado VARCHAR(255),
-    pais VARCHAR(255),
-    data_cadastro TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    data_atualizacao TIMESTACREATE DATABASE Cursos;
+CREATE DATABASE Cursos;
 
 USE Cursos;
 
